@@ -59,7 +59,7 @@ a:hover { color: var(--teal-dark); }
   color: var(--navy);
   font-weight: 600;
 }
-.btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0, 196, 180, 0.4); }
+.btn-primary:hover { background: var(--teal-dark); color: var(--navy); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 196, 180, 0.15); }
 .btn-outline {
   background: transparent;
   border: 1px solid var(--teal);

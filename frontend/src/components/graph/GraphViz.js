@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as d3 from 'd3';
 import * as api from '../../utils/api';
 
-const GraphViz = ({ highlightPath = [] }) => {
-  const svgRef    = useRef();
-  const [status, setStatus]   = useState('loading'); // loading | empty | ready | error
+const EMPTY_PATH = [];
+
+const GraphViz = ({ highlightPath = EMPTY_PATH }) => {
+  const svgRef = useRef();
+  const [status, setStatus] = useState('loading'); // loading | empty | ready | error
   const [message, setMessage] = useState('');
-  const [stats, setStats]     = useState({ hospitals: 0, edges: 0, nodes: 0, links: 0 });
+  const [stats, setStats] = useState({ hospitals: 0, edges: 0, nodes: 0, links: 0 });
   const [tooltip, setTooltip] = useState(null);
   const dataRef = useRef({ nodes: [], links: [] });
 
@@ -48,7 +50,7 @@ const GraphViz = ({ highlightPath = [] }) => {
         const nodeIdsInEdges = new Set();
         for (const e of allEdges) {
           if (nodeMap.has(e.fromNodeId)) nodeIdsInEdges.add(e.fromNodeId);
-          if (nodeMap.has(e.toNodeId))   nodeIdsInEdges.add(e.toNodeId);
+          if (nodeMap.has(e.toNodeId)) nodeIdsInEdges.add(e.toNodeId);
         }
 
         // Also add hospitals that have nodeIds but no edges (isolated nodes)
@@ -133,7 +135,7 @@ const GraphViz = ({ highlightPath = [] }) => {
 
     // Deep copy nodes for D3 simulation
     const simNodes = nodes.map(n => ({ ...n }));
-    const byId     = new Map(simNodes.map(n => [n.id, n]));
+    const byId = new Map(simNodes.map(n => [n.id, n]));
 
     // Resolve link references to actual node objects
     const simLinks = links
@@ -141,19 +143,19 @@ const GraphViz = ({ highlightPath = [] }) => {
       .map(l => ({ ...l, source: byId.get(l.source), target: byId.get(l.target) }));
 
     const large = simNodes.length > 80;
-    const r     = large ? 6 : 16;
+    const r = large ? 6 : 16;
 
     // Highlight set
     const hlSet = new Set();
     for (let i = 0; i < highlightPath.length - 1; i++) {
-      hlSet.add([highlightPath[i], highlightPath[i+1]].sort().join('|||'));
+      hlSet.add([highlightPath[i], highlightPath[i + 1]].sort().join('|||'));
     }
 
     // Simulation
     const sim = d3.forceSimulation(simNodes)
-      .force('link',      d3.forceLink(simLinks).id(d => d.id).distance(large ? 25 : 70))
-      .force('charge',    d3.forceManyBody().strength(large ? -60 : -250))
-      .force('center',    d3.forceCenter(W/2, H/2))
+      .force('link', d3.forceLink(simLinks).id(d => d.id).distance(large ? 25 : 70))
+      .force('charge', d3.forceManyBody().strength(large ? -60 : -250))
+      .force('center', d3.forceCenter(W / 2, H / 2))
       .force('collision', d3.forceCollide(large ? 10 : 24))
       .alphaDecay(large ? 0.04 : 0.02);
 
@@ -183,8 +185,8 @@ const GraphViz = ({ highlightPath = [] }) => {
       .join('g')
       .call(d3.drag()
         .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-        .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
-        .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
+        .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+        .on('end', (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
       )
       .on('mouseenter', (e, d) => setTooltip({ h: d, x: e.clientX, y: e.clientY }))
       .on('mouseleave', () => setTooltip(null));
@@ -196,7 +198,7 @@ const GraphViz = ({ highlightPath = [] }) => {
         const av = d.beds?.available ?? 0;
         if (av > 50) return '#10b981';
         if (av > 10) return '#00c4b4';
-        if (av > 0)  return '#f59e0b';
+        if (av > 0) return '#f59e0b';
         return '#ef4444';
       })
       .attr('fill-opacity', 0.85)
