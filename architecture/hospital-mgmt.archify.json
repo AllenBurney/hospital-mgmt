@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Hospital Management System Architecture",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "viewBox": [1320, 820],
+    "repository": {
+      "url": "https://github.com/AllenBurney/hospital-mgmt.git",
+      "revision": "16c3033d76dd13294b1e1e2b28e4044d89689de9"
+    }
+  },
+  "components": [
+    {
+      "id": "users",
+      "type": "external",
+      "label": "Patients & Staff",
+      "sublabel": "Browser users",
+      "pos": [45, 340],
+      "size": [175, 72],
+      "sources": [{ "path": "frontend/src/App.js", "line": 20, "label": "routes" }]
+    },
+    {
+      "id": "webapp",
+      "type": "frontend",
+      "label": "React Web App",
+      "sublabel": "Pages, auth, graph view",
+      "tag": "localhost:3000",
+      "pos": [300, 340],
+      "size": [190, 72],
+      "sources": [{ "path": "frontend/src/App.js", "line": 1, "label": "application" }, { "path": "frontend/src/utils/api.js", "line": 1, "label": "API client" }]
+    },
+    {
+      "id": "express",
+      "type": "backend",
+      "label": "Express API",
+      "sublabel": "Auth, hospitals, doctors, appointments",
+      "tag": "localhost:5000",
+      "pos": [600, 340],
+      "size": [205, 72],
+      "sources": [{ "path": "backend/server.js", "line": 1, "label": "server" }]
+    },
+    {
+      "id": "mongodb",
+      "type": "database",
+      "label": "MongoDB",
+      "sublabel": "Core application data",
+      "pos": [1030, 340],
+      "size": [205, 72],
+      "sources": [{ "path": "backend/config/db.js", "line": 1, "label": "connection" }]
+    },
+    {
+      "id": "jwt",
+      "type": "security",
+      "label": "JWT Authorization",
+      "sublabel": "Bearer token and RBAC",
+      "pos": [615, 130],
+      "size": [175, 72],
+      "sources": [{ "path": "backend/middleware/auth.js", "line": 1, "label": "middleware" }]
+    },
+    {
+      "id": "controllers",
+      "type": "backend",
+      "label": "Domain Controllers",
+      "sublabel": "Domain workflows",
+      "pos": [605, 560],
+      "size": [195, 72],
+      "sources": [{ "path": "backend/controllers/hospitalController.js", "line": 1, "label": "hospital" }, { "path": "backend/controllers/appointmentController.js", "line": 1, "label": "appointments" }]
+    },
+    {
+      "id": "graph",
+      "type": "backend",
+      "label": "Graph Search",
+      "sublabel": "Dijkstra and availability filters",
+      "pos": [300, 560],
+      "size": [195, 72],
+      "sources": [{ "path": "backend/utils/graphAlgorithm.js", "line": 1, "label": "algorithm" }, { "path": "backend/models/HospitalGraph.js", "line": 1, "label": "edges" }]
+    }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Browser", "wraps": ["webapp"], "pad": 34 },
+    { "kind": "region", "label": "Node.js service", "wraps": ["express", "jwt", "controllers", "graph"], "pad": 34 }
+  ],
+  "connections": [
+    { "id": "browser", "from": "users", "to": "webapp", "label": "HTTPS", "variant": "default" },
+    { "id": "api", "from": "webapp", "to": "express", "label": "REST /api", "variant": "emphasis" },
+    { "id": "token", "from": "webapp", "to": "jwt", "label": "Bearer JWT", "variant": "security", "fromSide": "top", "toSide": "bottom", "via": [[395, 260], [702.5, 260]], "labelAt": [548, 250] },
+    { "id": "authorize", "from": "express", "to": "jwt", "label": "protect / authorize", "variant": "security" },
+    { "id": "route", "from": "express", "to": "controllers", "label": "route handlers", "variant": "default", "fromSide": "bottom", "toSide": "top", "labelAt": [770, 490] },
+    { "id": "search", "from": "controllers", "to": "graph", "label": "nearby graph search", "variant": "emphasis" },
+    { "id": "models", "from": "controllers", "to": "mongodb", "label": "Mongoose models", "variant": "default" },
+    { "id": "identity", "from": "jwt", "to": "mongodb", "label": "User lookup", "variant": "security" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Primary request path",
+      "items": ["React sends REST requests through the development proxy.", "Express routes requests to domain controllers.", "Controllers persist and query MongoDB through Mongoose."]
+    },
+    {
+      "dot": "amber",
+      "title": "Access & routing",
+      "items": ["JWT middleware protects user and administrator operations.", "Dijkstra search ranks connected hospitals using graph-edge distance or travel time."]
+    }
+  ]
+}
