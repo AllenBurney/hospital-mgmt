@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 
 const statusColors = { pending: '#f59e0b', confirmed: '#10b981', completed: '#6366f1', cancelled: '#ef4444' };
 
-// ── Section header helper ─────────────────────────────────────────
 const Section = ({ title }) => (
   <div style={{
     fontSize: 12, fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase',
@@ -14,7 +13,6 @@ const Section = ({ title }) => (
   }}>{title}</div>
 );
 
-// ── Create Hospital Form ──────────────────────────────────────────
 const CreateHospitalForm = ({ onCreated }) => {
   const [form, setForm] = useState({
     name: '', registrationNumber: '', type: 'private',
@@ -205,7 +203,7 @@ const CreateHospitalForm = ({ onCreated }) => {
   );
 };
 
-// ── Add Doctor Form ───────────────────────────────────────────────
+//Add Doctor Form 
 const AddDoctorForm = ({ hospitalId, onAdded }) => {
   const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const [form, setForm] = useState({
@@ -389,7 +387,7 @@ const AddDoctorForm = ({ hospitalId, onAdded }) => {
   );
 };
 
-// ── Doctors List ──────────────────────────────────────────────────
+// Doctor List
 const DoctorsList = ({ hospitalId }) => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
