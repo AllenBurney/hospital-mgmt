@@ -220,7 +220,7 @@ const FindHospital = () => {
           )}
         </div>
 
-        {/* ── Filters row 1 ── */}
+        {/* Filter Row 1*/}
         <div className="grid-3" style={{ marginBottom: 16 }}>
           <div className="form-group">
             <label className="label">Bed Type</label>
@@ -248,7 +248,7 @@ const FindHospital = () => {
           </div>
         </div>
 
-        {/* ── Filters row 2 ── */}
+        {/* Filters row 2 */}
         <div className="grid-3" style={{ marginBottom: 20 }}>
           <div className="form-group">
             <label className="label">Max OPD Fee (₹)</label>
